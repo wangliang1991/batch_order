@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class HttpService {
 
-    private static final  OkHttpClient HTTP_CLIENT = new OkHttpClient()
+    private static final OkHttpClient HTTP_CLIENT = new OkHttpClient()
             .newBuilder()
             .connectTimeout(5, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
@@ -30,18 +30,18 @@ public class HttpService {
     /**
      * 根据路径获取验证码图片
      *
-     * @param urlStr 图片路径地址
+     * @param urlStr            图片路径地址
      * @param responseCookieKey 图片需要设置的cookie
      */
     public File getImage(String urlStr, String responseCookieKey) {
-        if(StringUtils.isBlank(urlStr)) {
+        if (StringUtils.isBlank(urlStr)) {
             return null;
         }
 
         try {
             URL url = new URL(urlStr);
             //打开链接
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             //设置请求方式为"GET"
             conn.setRequestMethod("GET");
@@ -79,7 +79,7 @@ public class HttpService {
      * @param requestBean 请求bean
      */
     public Response get(RequestBean requestBean) {
-        if(requestBean == null || StringUtils.isBlank(requestBean.getUrl())) {
+        if (requestBean == null || StringUtils.isBlank(requestBean.getUrl())) {
             return null;
         }
 
@@ -93,15 +93,15 @@ public class HttpService {
                     .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
                     .addHeader("Connection", "keep-alive")
                     .addHeader("Accept-Language", "zh-CN,zh;q=0.9");
-            if(StringUtils.isNotBlank(requestBean.getRequestCookieKey())) {
+            if (StringUtils.isNotBlank(requestBean.getRequestCookieKey())) {
                 requestBuilder.addHeader("Cookie", CookieUtil.getCookie(requestBean.getRequestCookieKey()));
             }
 
-            if(StringUtils.isNotBlank(requestBean.getRefer())) {
+            if (StringUtils.isNotBlank(requestBean.getRefer())) {
                 requestBuilder.addHeader("Referer", requestBean.getRefer());
             }
             response = HTTP_CLIENT.newCall(requestBuilder.build()).execute();
-            if(StringUtils.isNotBlank(requestBean.getResponseCookieKey())) {
+            if (StringUtils.isNotBlank(requestBean.getResponseCookieKey())) {
                 String cookie = response.header("set-cookie");
                 CookieUtil.setCookie(requestBean.getResponseCookieKey(), cookie.substring(0, cookie.indexOf(';')));
             }
@@ -120,7 +120,7 @@ public class HttpService {
      * @param requestBean 请求bean
      */
     public Response post(RequestBean requestBean) {
-        if(requestBean == null || StringUtils.isBlank(requestBean.getUrl())) {
+        if (requestBean == null || StringUtils.isBlank(requestBean.getUrl())) {
             return null;
         }
 
@@ -140,7 +140,7 @@ public class HttpService {
      * @param requestBean 请求bean
      */
     public Response post(RequestBean requestBean, RequestBody requestBody) {
-        if(requestBean == null || StringUtils.isBlank(requestBean.getUrl()) || requestBody == null) {
+        if (requestBean == null || StringUtils.isBlank(requestBean.getUrl()) || requestBody == null) {
             return null;
         }
 
@@ -151,17 +151,17 @@ public class HttpService {
                     .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36")
                     .addHeader("Upgrade-Insecure-Requests", "1")
                     .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .addHeader("Referer",requestBean.getRefer())
+                    .addHeader("Referer", requestBean.getRefer())
                     .addHeader("Connection", "keep-alive")
-                    .addHeader("Accept-Encoding","deflate")
+                    .addHeader("Accept-Encoding", "deflate")
                     .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
                     .post(requestBody);
 
-            if(StringUtils.isNotBlank(requestBean.getRequestCookieKey())) {
+            if (StringUtils.isNotBlank(requestBean.getRequestCookieKey())) {
                 requestBuilder.addHeader("Cookie", CookieUtil.getCookie(requestBean.getRequestCookieKey()));
             }
             Response response = HTTP_CLIENT.newCall(requestBuilder.build()).execute();
-            if(StringUtils.isNotBlank(requestBean.getResponseCookieKey())) {
+            if (StringUtils.isNotBlank(requestBean.getResponseCookieKey())) {
                 String cookie = response.header("set-cookie");
                 CookieUtil.setCookie(requestBean.getResponseCookieKey(), cookie.substring(0, cookie.indexOf(';')));
             }
@@ -173,6 +173,9 @@ public class HttpService {
         return null;
     }
 
+    /**
+     * 异步post请求
+     */
     public void postAsync(RequestBean requestBean, RequestBody requestBody) {
         if (requestBean == null || StringUtils.isBlank(requestBean.getUrl()) || requestBody == null) {
             return;
@@ -200,6 +203,7 @@ public class HttpService {
                         body.string();//string()会调用关闭
                     }
                 } catch (Exception e) {
+
                 }
 
             }
@@ -209,7 +213,7 @@ public class HttpService {
     private String buildUrl(String url, Map<String, String> paramMap) {
         StringBuilder urlWithParams = new StringBuilder(url);
 
-        if(paramMap != null && !paramMap.isEmpty()) {
+        if (paramMap != null && !paramMap.isEmpty()) {
             urlWithParams.append("?");
             for (Map.Entry<String, String> entry : paramMap.entrySet()) {
                 urlWithParams.append(entry.getKey())
@@ -225,7 +229,7 @@ public class HttpService {
     private RequestBody buildRequestBody(Map<String, String> paramMap) {
         FormBody.Builder formBody = new FormBody.Builder();
 
-        if(paramMap != null && !paramMap.isEmpty()) {
+        if (paramMap != null && !paramMap.isEmpty()) {
             for (Map.Entry<String, String> entry : paramMap.entrySet()) {
                 formBody.add(entry.getKey(), entry.getValue());
             }
@@ -234,14 +238,14 @@ public class HttpService {
         return formBody.build();
     }
 
-    private byte[] readInputStream(InputStream inStream) throws Exception{
+    private byte[] readInputStream(InputStream inStream) throws Exception {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         //创建一个Buffer字符串
         byte[] buffer = new byte[1024];
         //每次读取的字符串长度，如果为-1，代表全部读取完毕
         int len = 0;
         //使用一个输入流从buffer里把数据读取出来
-        while( (len=inStream.read(buffer)) != -1 ){
+        while ((len = inStream.read(buffer)) != -1) {
             //用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
             outStream.write(buffer, 0, len);
         }

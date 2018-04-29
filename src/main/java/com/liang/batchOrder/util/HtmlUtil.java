@@ -26,7 +26,7 @@ public class HtmlUtil {
         Elements elements = doc.select("p");
 
         for (Element element : elements) {
-            if(element.text().contains("Click")) {
+            if (element.text().contains("Click")) {
                 return element.childNode(1).attr("href");
             }
         }
@@ -48,11 +48,11 @@ public class HtmlUtil {
         ReferencePriceBean referencePriceBean = null;
 
         for (Element element : elements) {
-            if(index == firstTableIndex) {
+            if (index == firstTableIndex) {
                 firstSearchResultBeanList = buildSearchResultBean(element);
-            } else if(index == secondTableIndex) {
+            } else if (index == secondTableIndex) {
                 secondSearchResultBeanList = buildSearchResultBean(element);
-            } else if(index == thirdTableIndex) {
+            } else if (index == thirdTableIndex) {
                 referencePriceBean = getReferencePrice(element);
             }
 
@@ -73,19 +73,19 @@ public class HtmlUtil {
         Elements trs = element.select("tr");
         for (Element tr : trs) {
             Elements tds = tr.select("td");
-            if(first) {
+            if (first) {
                 first = false;
                 continue;
             }
             int index = 0;
             SearchResultBean searchResultBean = new SearchResultBean();
             for (Element td : tds) {
-                if(index == 0) {
-                    index ++;
+                if (index == 0) {
+                    index++;
                     continue;
                 }
                 setSearchBean(searchResultBean, td.text(), index);
-                index ++;
+                index++;
             }
 
             searchResultBeanList.add(searchResultBean);
@@ -127,21 +127,21 @@ public class HtmlUtil {
         Elements trs = element.select("tr");
         for (Element tr : trs) {
             Elements tds = tr.select("td");
-            if(first) {
+            if (first) {
                 first = false;
                 continue;
             }
             int index = 0;
             for (Element td : tds) {
-                if(index == 0) {
-                    index ++;
+                if (index == 0) {
+                    index++;
                     String value = td.select("input").val();
                     ReferenceValueBean referenceValueBean = JacksonUtil.decode(value, ReferenceValueBean.class);
                     referencePriceBean.setReferenceValueBean(referenceValueBean);
                     continue;
                 }
                 setReferenceBean(referencePriceBean, td.text(), index);
-                index ++;
+                index++;
             }
         }
 
@@ -192,4 +192,7 @@ public class HtmlUtil {
         }
     }
 
+    public Tuple<String, String> getCodeTuple(String html) {
+
+    }
 }
