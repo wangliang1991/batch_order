@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    boolean loginStatus = (boolean) request.getAttribute("loginStatus");
+    Boolean loginStatus = (Boolean) request.getAttribute("loginStatus");
 %>
 <html>
 <head>
