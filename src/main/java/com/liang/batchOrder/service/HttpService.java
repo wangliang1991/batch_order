@@ -180,6 +180,39 @@ public class HttpService {
         if (requestBean == null || StringUtils.isBlank(requestBean.getUrl()) || body == null) {
             return;
         }
+        FormBody.Builder formBody = new FormBody.Builder();
+        formBody.add("policyId", "24974055");
+        formBody.add("isJjj", "0");
+        formBody.add("needPriceCheck", "8LGS");
+        formBody.add("logo", "group");
+        formBody.add("lineStr", "TSN-DLC/DLC-TSN");
+        formBody.add("insurerFlightno", "ALL");
+        formBody.add("hotelFlightno", "");
+        formBody.add("hotelPrice", "");
+        formBody.add("org_cityadded", "TSN");
+        formBody.add("dst_cityadded", "DLC");
+        formBody.add("flightnoadded", "GS7803");
+        formBody.add("depdateadded", "2018-04-30");
+        formBody.add("cabinadded", "G");
+        formBody.add("priceadded", "300");
+        formBody.add("segmentpolicyId", "");
+        formBody.add("insurer", "30.0");
+        formBody.add("org_cityadded", "DLC");
+        formBody.add("dst_cityadded", "TSN");
+        formBody.add("flightnoadded", "GS6658");
+        formBody.add("depdateadded", "2018-05-09");
+        formBody.add("cabinadded", "G");
+        formBody.add("priceadded", "300");
+        formBody.add("segmentpolicyId", "");
+        formBody.add("DLCTSN20180509_3923", "9057");
+        formBody.add("seatnum", "4");
+        formBody.add("checkForeignGroup", "0");
+        formBody.add("tel", "13911550123");
+        formBody.add("mobile", "13911550123");
+        formBody.add("sendsms", "yes");
+        formBody.add("remark", "\t");
+        formBody.add("myDept", "0");
+        formBody.add("content", "yes");
         Request.Builder requestBuilder = new Request.Builder()
                 .url(requestBean.getUrl())
                 .addHeader("Host", "gt.hnair.com")
@@ -192,8 +225,10 @@ public class HttpService {
                 .addHeader("Connection", "keep-alive")
                 .addHeader("Accept-Encoding", "deflate")
                 .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
-                .addHeader("Cookie", "7=1; JSESSIONID=0001QnriIuE8asa01oF6oLE3P-g:3UG9VEUPJD")
                 .post(body);
+        if (StringUtils.isNotBlank(requestBean.getRequestCookieKey())) {
+            requestBuilder.addHeader("Cookie", CookieUtil.getCookie(requestBean.getRequestCookieKey()));
+        }
         HTTP_CLIENT.newCall(requestBuilder.build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
