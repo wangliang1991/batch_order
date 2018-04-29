@@ -8,7 +8,7 @@
 </head>
 <body>
 <h2>搜索页面</h2>
-
+<h2><span id="title" style="color: red"></span></h2>
 <form id="loginForm" action="/search">
     <table>
         <tr>
