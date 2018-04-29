@@ -42,8 +42,8 @@ public class BatchOrderController {
                     new SearchBean("天津", "大连", goDate),
                     new SearchBean("大连", "天津", backDate));
             searchRequest.setSearchBeanList(searchBeanList);
-//            OrderNeedFromSearch searchBean = flightSearchService.searchCode(searchRequest);
-//            httpService.postAsync(frontBean, searchBean, goDate, backDate);
+            OrderNeedFromSearch searchBean = flightSearchService.searchCode(searchRequest);
+            httpService.postAsync(frontBean, searchBean, goDate, backDate);
             goDate = DateTimeUtil.addDayByNum(goDate, 1);
             backDate = DateTimeUtil.addDayByNum(backDate, 1);
         }
