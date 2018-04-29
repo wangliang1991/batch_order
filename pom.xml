@@ -21,6 +21,7 @@
     <commons-lang3.version>3.6</commons-lang3.version>
     <commons-collections.version>3.2.1</commons-collections.version>
     <commons-codec.version>1.8</commons-codec.version>
+    <baidu-ocr.version>4.2.0</baidu-ocr.version>
   </properties>
 
 
@@ -124,6 +125,12 @@
         <version>1.11.2</version>
       </dependency>
 
+      <dependency>
+        <groupId>com.baidu.aip</groupId>
+        <artifactId>java-sdk</artifactId>
+        <version>${baidu-ocr.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -217,6 +224,11 @@
     <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.baidu.aip</groupId>
+      <artifactId>java-sdk</artifactId>
     </dependency>
 
   </dependencies>

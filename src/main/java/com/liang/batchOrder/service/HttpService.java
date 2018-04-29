@@ -31,9 +31,10 @@ public class HttpService {
      * 根据路径获取验证码图片
      *
      * @param urlStr            图片路径地址
+     * @param requestCookieKey 请求需要的cookie
      * @param responseCookieKey 图片需要设置的cookie
      */
-    public File getImage(String urlStr, String responseCookieKey) {
+    public byte[] getImage(String urlStr, String requestCookieKey, String responseCookieKey) {
         if (StringUtils.isBlank(urlStr)) {
             return null;
         }
@@ -43,29 +44,27 @@ public class HttpService {
             //打开链接
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
+            if(StringUtils.isNotBlank(requestCookieKey)) {
+                conn.setRequestProperty("Cookie", CookieUtil.getCookie(requestCookieKey));
+            }
+
+
             //设置请求方式为"GET"
             conn.setRequestMethod("GET");
             //超时响应时间为5秒
             conn.setConnectTimeout(5 * 1000);
 
-            String cookie = conn.getHeaderField("set-cookie");
-            CookieUtil.setCookie(responseCookieKey, cookie.substring(0, cookie.indexOf(';')));
+            if(StringUtils.isNotBlank(responseCookieKey)) {
+                String cookie = conn.getHeaderField("set-cookie");
+                CookieUtil.setCookie(responseCookieKey, cookie.substring(0, cookie.indexOf(';')));
+            }
 
             //通过输入流获取图片数据
             InputStream inStream = conn.getInputStream();
             //得到图片的二进制数据，以二进制封装得到数据，具有通用性
             byte[] data = readInputStream(inStream);
-            //new一个文件对象用来保存图片，默认保存当前工程根目录
-            String path = "D://" + UUID.randomUUID().toString() + "code.jpg";
-            File imageFile = new File(path);
-            //创建输出流
-            FileOutputStream outStream = new FileOutputStream(imageFile);
-            //写入数据
-            outStream.write(data);
-            //关闭输出流
-            outStream.close();
 
-            return imageFile;
+            return data;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
