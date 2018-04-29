@@ -1,6 +1,9 @@
 package com.liang.batchOrder.service;
 
+import com.liang.batchOrder.bean.OrderNeedFromFront;
+import com.liang.batchOrder.bean.OrderNeedFromSearch;
 import com.liang.batchOrder.bean.RequestBean;
+import com.liang.batchOrder.constants.CookieConstant;
 import com.liang.batchOrder.util.CookieUtil;
 import okhttp3.*;
 import org.apache.commons.collections.MapUtils;
@@ -26,6 +29,7 @@ public class HttpService {
             .connectionPool(new ConnectionPool(60, 5, TimeUnit.MINUTES))
             .followRedirects(false)  //禁制OkHttp的重定向操作，我们自己处理重定向
             .followSslRedirects(false)
+//            .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)))
             .build();
 
     /**
@@ -176,12 +180,12 @@ public class HttpService {
     /**
      * 异步post请求
      */
-    public void postAsync(RequestBean requestBean,RequestBody body) {
-        if (requestBean == null || StringUtils.isBlank(requestBean.getUrl()) || body == null) {
+    public void postAsync(OrderNeedFromFront frontBean, OrderNeedFromSearch searchBean, String goDate, String backDate) {
+        if (frontBean == null || searchBean == null || StringUtils.isBlank(goDate) || StringUtils.isBlank(backDate)) {
             return;
         }
         FormBody.Builder formBody = new FormBody.Builder();
-        formBody.add("policyId", "24974055");
+        formBody.add("policyId", searchBean.getPolicyId());
         formBody.add("isJjj", "0");
         formBody.add("needPriceCheck", "8LGS");
         formBody.add("logo", "group");
@@ -191,30 +195,30 @@ public class HttpService {
         formBody.add("hotelPrice", "");
         formBody.add("org_cityadded", "TSN");
         formBody.add("dst_cityadded", "DLC");
-        formBody.add("flightnoadded", "GS7803");
-        formBody.add("depdateadded", "2018-04-30");
-        formBody.add("cabinadded", "G");
-        formBody.add("priceadded", "300");
+        formBody.add("flightnoadded", frontBean.getFirstFlightName());
+        formBody.add("depdateadded", goDate);
+        formBody.add("cabinadded", searchBean.getCabin());
+        formBody.add("priceadded", searchBean.getFirstFlightPrice());
         formBody.add("segmentpolicyId", "");
         formBody.add("insurer", "30.0");
         formBody.add("org_cityadded", "DLC");
         formBody.add("dst_cityadded", "TSN");
-        formBody.add("flightnoadded", "GS6658");
-        formBody.add("depdateadded", "2018-05-09");
-        formBody.add("cabinadded", "G");
-        formBody.add("priceadded", "300");
+        formBody.add("flightnoadded", frontBean.getSecondFlightName());
+        formBody.add("depdateadded", backDate);
+        formBody.add("cabinadded", searchBean.getCabin());
+        formBody.add("priceadded", searchBean.getSecondFlightPrice());
         formBody.add("segmentpolicyId", "");
-        formBody.add("DLCTSN20180509_3923", "9057");
-        formBody.add("seatnum", "4");
+        formBody.add(searchBean.getCode().getK(), searchBean.getCode().getV());
+        formBody.add("seatnum", frontBean.getSeatNum());
         formBody.add("checkForeignGroup", "0");
-        formBody.add("tel", "13911550123");
-        formBody.add("mobile", "13911550123");
+        formBody.add("tel", "022-84349681");
+        formBody.add("mobile", frontBean.getMobile());
         formBody.add("sendsms", "yes");
         formBody.add("remark", "\t");
         formBody.add("myDept", "0");
         formBody.add("content", "yes");
         Request.Builder requestBuilder = new Request.Builder()
-                .url(requestBean.getUrl())
+                .url("http://gt.hnair.com/gt/order/frontend/submitorder/submitOrder.do?logo=group")
                 .addHeader("Host", "gt.hnair.com")
                 .addHeader("Origin", "http://gt.hnair.com")
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
@@ -225,10 +229,8 @@ public class HttpService {
                 .addHeader("Connection", "keep-alive")
                 .addHeader("Accept-Encoding", "deflate")
                 .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
-                .post(body);
-        if (StringUtils.isNotBlank(requestBean.getRequestCookieKey())) {
-            requestBuilder.addHeader("Cookie", CookieUtil.getCookie(requestBean.getRequestCookieKey()));
-        }
+                .addHeader("Cookie", CookieUtil.getCookie(CookieConstant.LOGIN_SESSION_COOKIE_KEY))
+                .post(formBody.build());
         HTTP_CLIENT.newCall(requestBuilder.build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -238,7 +240,7 @@ public class HttpService {
             public void onResponse(Call call, Response response) {
                 try (ResponseBody body = response.body()) {
                     if (body != null) {
-                        body.string();//string()会调用关闭
+                        body.string();
                     }
                 } catch (Exception e) {
 

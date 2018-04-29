@@ -9,10 +9,8 @@ import okhttp3.ResponseBody;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 
 public class SimpleTest {

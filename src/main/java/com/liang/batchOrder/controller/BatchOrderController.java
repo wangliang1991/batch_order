@@ -2,6 +2,7 @@ package com.liang.batchOrder.controller;
 
 import com.google.common.collect.Lists;
 import com.liang.batchOrder.bean.OrderNeedFromFront;
+import com.liang.batchOrder.bean.OrderNeedFromSearch;
 import com.liang.batchOrder.bean.SearchBean;
 import com.liang.batchOrder.bean.SearchRequest;
 import com.liang.batchOrder.bean.Tuple;
@@ -28,25 +29,20 @@ public class BatchOrderController {
     private HttpService httpService;
 
     @RequestMapping("/batchOrder")
-    public String search(OrderNeedFromFront bean) {
-        String depDate = bean.getDepdateadded();
-        String arrDate = bean.getDepdateadded();
-
-        for (int i = 0; i < bean.getDays(); i++) {
+    public void search(OrderNeedFromFront frontBean) {
+        String goDate = frontBean.getGoDate();
+        String backDate = frontBean.getBackDate();
+        for (int i = 0; i < frontBean.getDays(); i++) {
             SearchRequest searchRequest = new SearchRequest();
             List<SearchBean> searchBeanList = Lists.newArrayList(
-                    new SearchBean("天津", "大连", depDate),
-                    new SearchBean("大连", "天津", arrDate));
+                    new SearchBean("天津", "大连", goDate),
+                    new SearchBean("大连", "天津", backDate));
             searchRequest.setSearchBeanList(searchBeanList);
-            Tuple<String, String> codeTuple = flightSearchService.searchCode(searchRequest);
-
-            httpService.postAsync();
-
-            depDate = DateTimeUtil.addDayByNum(depDate, 1);
-            arrDate = DateTimeUtil.addDayByNum(arrDate, 1);
-//        }
-
-        return null;
+            OrderNeedFromSearch searchBean = flightSearchService.searchCode(searchRequest);
+            httpService.postAsync(frontBean, searchBean, goDate, backDate);
+            goDate = DateTimeUtil.addDayByNum(goDate, 1);
+            backDate = DateTimeUtil.addDayByNum(backDate, 1);
+        }
     }
 
     private RequestBody buildParamRequest(List<SearchBean> searchBeanList) {
