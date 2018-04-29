@@ -1,11 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    boolean loginStatus = (boolean) request.getAttribute("loginStatus");
+%>
 <html>
 <head>
 </head>
 <body>
 <h2>搜索页面</h2>
 
-<form action="/search">
+<form id="loginForm" action="/search">
     <table>
         <tr>
             <td>去程：</td>
@@ -41,4 +44,14 @@
     <input type="submit"/>
 </form>
 </body>
+<script type="application/javascript">
+    $(function () {
+        var loginStatus = <%=loginStatus%>;
+        if(!loginStatus) {
+            $('#loginForm').hide();
+            $("#title").text("登录失败请返回重试");
+        }
+    });
+
+</script>
 </html>
