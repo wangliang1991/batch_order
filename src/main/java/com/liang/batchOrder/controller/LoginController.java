@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.liang.batchOrder.bean.RequestBean;
 import com.liang.batchOrder.constants.CookieConstant;
 import com.liang.batchOrder.constants.UrlConstants;
+import com.liang.batchOrder.service.CodeCrackService;
 import com.liang.batchOrder.service.HttpService;
 import com.liang.batchOrder.util.HtmlUtil;
 import com.liang.batchOrder.util.Tess4jUtils;
@@ -28,6 +29,9 @@ public class LoginController {
 
     @Resource
     private HttpService httpService;
+
+    @Resource
+    private CodeCrackService codeCrackService;
 
     @RequestMapping("/login")
     public ModelAndView login(String userName, String password) {
@@ -121,10 +125,10 @@ public class LoginController {
     }
 
     private String getCode() {
-        File imageFile = httpService.getImage(UrlConstants.VERIFICATION_URL, CookieConstant.LOGIN_CODE_COOKIE_KEY);
+        byte[] imageData = httpService.getImage(UrlConstants.VERIFICATION_URL, null, CookieConstant.LOGIN_CODE_COOKIE_KEY);
         String code = null;
-        if(imageFile != null) {
-            code = Tess4jUtils.readChar(imageFile);
+        if(imageData != null) {
+            code = codeCrackService.doBaiDuCracking(imageData);
         }
 
         return StringUtils.trim(code);

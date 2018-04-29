@@ -42,7 +42,6 @@ public class HtmlUtil {
         int firstTableIndex = 9;
         int secondTableIndex = 12;
         int thirdTableIndex = 15;
-        boolean hasReferencePrice = false;
         List<SearchResultBean> firstSearchResultBeanList = Lists.newArrayList();
         List<SearchResultBean> secondSearchResultBeanList = Lists.newArrayList();
         ReferencePriceBean referencePriceBean = null;
@@ -64,6 +63,15 @@ public class HtmlUtil {
         searchResponse.setReferencePriceBean(referencePriceBean);
 
         return searchResponse;
+    }
+
+    public static String getCodeKey(String html) {
+        Document doc = Jsoup.parse(html);
+        Element form = doc.selectFirst("form[name=submitOrderForm]");
+        Element img = form.selectFirst("img");
+        Element input = img.previousElementSibling();
+        String key = input.attr("name");
+        return key;
     }
 
     private static List<SearchResultBean> buildSearchResultBean(Element element) {

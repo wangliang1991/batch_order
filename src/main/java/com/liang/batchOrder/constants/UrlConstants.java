@@ -20,4 +20,7 @@ public class UrlConstants {
     //
     public static final String SEARCH_URL = "http://gt.hnair.com/gt/backend/sun/searchPrice.do";
 
+    //search页验证码获取
+    public static final String SEARCH_VERIFICATION_URL = "http://gt.hnair.com/gt/codeImage?imgType=1";
+
 }
