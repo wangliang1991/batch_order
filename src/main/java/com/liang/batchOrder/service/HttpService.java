@@ -1,5 +1,6 @@
 package com.liang.batchOrder.service;
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.liang.batchOrder.bean.OrderNeedFromFront;
 import com.liang.batchOrder.bean.OrderNeedFromSearch;
 import com.liang.batchOrder.bean.RequestBean;
@@ -182,10 +183,11 @@ public class HttpService {
     /**
      * 异步post请求
      */
-    public void postAsync(OrderNeedFromFront frontBean, OrderNeedFromSearch searchBean, String goDate, String backDate) {
+    public void postAsync(RateLimiter limiter, OrderNeedFromFront frontBean, OrderNeedFromSearch searchBean, String goDate, String backDate) {
         if (frontBean == null || searchBean == null || StringUtils.isBlank(goDate) || StringUtils.isBlank(backDate)) {
             return;
         }
+        limiter.acquire();
         FormBody.Builder formBody = new FormBody.Builder();
         formBody.add("policyId", searchBean.getPolicyId());
         formBody.add("isJjj", "0");

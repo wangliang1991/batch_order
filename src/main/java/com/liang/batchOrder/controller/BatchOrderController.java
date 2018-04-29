@@ -31,19 +31,25 @@ public class BatchOrderController {
     private HttpService httpService;
 
     @RequestMapping("/batchOrder")
-    public void search(OrderNeedFromFront frontBean) {
-        RateLimiter limiter = RateLimiter.create(2, 10, TimeUnit.MILLISECONDS);
+    public void search(final OrderNeedFromFront frontBean) {
         String goDate = frontBean.getGoDate();
         String backDate = frontBean.getBackDate();
+        final RateLimiter limiter = RateLimiter.create(2, 10, TimeUnit.MILLISECONDS);
         for (int i = 0; i < frontBean.getDays(); i++) {
-            limiter.acquire();
             SearchRequest searchRequest = new SearchRequest();
             List<SearchBean> searchBeanList = Lists.newArrayList(
                     new SearchBean("天津", "大连", goDate),
                     new SearchBean("大连", "天津", backDate));
             searchRequest.setSearchBeanList(searchBeanList);
-            OrderNeedFromSearch searchBean = flightSearchService.searchCode(searchRequest);
-            httpService.postAsync(frontBean, searchBean, goDate, backDate);
+            final OrderNeedFromSearch searchBean = flightSearchService.searchCode(searchRequest);
+            final String finalGoDate = goDate;
+            final String finalBackDate = backDate;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    httpService.postAsync(limiter,frontBean, searchBean, finalGoDate, finalBackDate);
+                }
+            }).start();
             goDate = DateTimeUtil.addDayByNum(goDate, 1);
             backDate = DateTimeUtil.addDayByNum(backDate, 1);
         }
