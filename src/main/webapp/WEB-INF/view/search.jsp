@@ -24,7 +24,7 @@
         </tr>
         <tr>
             <td>起飞日期</td>
-            <td><input name="searchBeanList[0].depDate" id="go_depDate" type="text" value="2018-05-10"/></td>
+            <td><input name="searchBeanList[0].depDate" id="go_depDate" type="text" value="2018-05-03"/></td>
         </tr>
         <tr>
             <td>返程：</td>
@@ -39,7 +39,7 @@
         </tr>
         <tr>
             <td>起飞日期</td>
-            <td><input name="searchBeanList[1].depDate" id="return_depDate" type="text" value="2018-05-30"/></td>
+            <td><input name="searchBeanList[1].depDate" id="return_depDate" type="text" value="2018-05-10"/></td>
         </tr>
     </table>
     <input type="submit"/>
