@@ -1,7 +1,7 @@
 <%@ page import="com.liang.batchOrder.bean.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    SearchResponse searchResponse = (SearchResponse) request.getAttribute("loginStatus");
+    SearchResponse searchResponse = (SearchResponse) request.getAttribute("searchResponse");
     SearchRequest searchRequest = (SearchRequest) request.getAttribute("searchRequest");
     ReferencePriceBean referencePriceBean = searchResponse.getReferencePriceBean();
     SearchBean firstSearchBean = searchRequest.getSearchBeanList().get(0);
