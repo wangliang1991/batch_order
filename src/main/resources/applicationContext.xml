@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+    http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <!-- 开启注解支持 -->
+    <context:annotation-config/>
+
+    <!-- 加载数据库配置 -->
+    <!--<import resource="classpath:db/mysql.xml"/>-->
+
+    <!-- 扫描除了Controller之外的class文件 -->
+    <context:component-scan base-package="com.liang.batchOrder">
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+
+
+    <!--&lt;!&ndash; 开启事务管理的注解支持 &ndash;&gt;-->
+    <!--<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" order="200"/>-->
+
+    <!--&lt;!&ndash; 事务管理器 &ndash;&gt;-->
+    <!--<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+        <!--&lt;!&ndash; 需要管理的数据源 &ndash;&gt;-->
+        <!--<property name="dataSource" ref="dataSource"/>-->
+    <!--</bean>-->
+</beans>
