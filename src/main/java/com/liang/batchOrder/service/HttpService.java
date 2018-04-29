@@ -8,6 +8,8 @@ import com.liang.batchOrder.util.CookieUtil;
 import okhttp3.*;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -21,12 +23,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class HttpService {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpService.class);
     private static final OkHttpClient HTTP_CLIENT = new OkHttpClient()
             .newBuilder()
             .connectTimeout(5, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
-            .connectionPool(new ConnectionPool(60, 5, TimeUnit.MINUTES))
+            .connectionPool(new ConnectionPool(60, 5, TimeUnit.SECONDS))
             .followRedirects(false)  //禁制OkHttp的重定向操作，我们自己处理重定向
             .followSslRedirects(false)
 //            .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)))
@@ -217,6 +219,7 @@ public class HttpService {
         formBody.add("remark", "\t");
         formBody.add("myDept", "0");
         formBody.add("content", "yes");
+
         Request.Builder requestBuilder = new Request.Builder()
                 .url("http://gt.hnair.com/gt/order/frontend/submitorder/submitOrder.do?logo=group")
                 .addHeader("Host", "gt.hnair.com")
@@ -234,6 +237,7 @@ public class HttpService {
         HTTP_CLIENT.newCall(requestBuilder.build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                LOGGER.error("ioException",e);
             }
 
             @Override
@@ -241,6 +245,8 @@ public class HttpService {
                 try (ResponseBody body = response.body()) {
                     if (body != null) {
                         body.string();
+
+                        LOGGER.info("提交成功");
                     }
                 } catch (Exception e) {
 
