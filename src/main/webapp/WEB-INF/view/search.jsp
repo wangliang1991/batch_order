@@ -4,6 +4,7 @@
 %>
 <html>
 <head>
+    <script type="application/javascript" src="../../js/jquery.js"></script>
 </head>
 <body>
 <h2>搜索页面</h2>
