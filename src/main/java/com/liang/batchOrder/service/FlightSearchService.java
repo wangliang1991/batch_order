@@ -4,7 +4,6 @@ import com.liang.batchOrder.bean.*;
 import com.liang.batchOrder.constants.CookieConstant;
 import com.liang.batchOrder.constants.UrlConstants;
 import com.liang.batchOrder.util.HtmlUtil;
-import com.liang.batchOrder.util.Tess4jUtils;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -27,18 +26,19 @@ public class FlightSearchService {
     @Resource
     private CodeCrackService codeCrackService;
 
-    public Tuple<String, String> searchCode(SearchRequest searchRequest) {
-        Tuple<String, String> codeTuple = null;
+    public OrderNeedFromSearch searchCode(SearchRequest searchRequest) {
+        OrderNeedFromSearch orderNeedFromSearch = null;
         try{
             String retHtml = doSearch(searchRequest);
             String key = HtmlUtil.getCodeKey(retHtml);
             String code = getCode();
-            return new Tuple<>(key, code);
+            SearchResponse searchResponse = HtmlUtil.getSearchResult(retHtml);
+            orderNeedFromSearch = buildOrderNeedFromSearch(key, code, searchResponse);
         }catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
-        return codeTuple;
+        return orderNeedFromSearch;
     }
 
     public SearchResponse search(SearchRequest searchRequest) {
@@ -114,5 +114,17 @@ public class FlightSearchService {
         }
 
         return StringUtils.trim(code);
+    }
+
+    private OrderNeedFromSearch buildOrderNeedFromSearch(String key, String code, SearchResponse searchResponse) {
+        OrderNeedFromSearch orderNeedFromSearch = new OrderNeedFromSearch();
+        orderNeedFromSearch.setCode(new Tuple<>(key, code));
+        ReferenceValueBean referenceValueBean = searchResponse.getReferencePriceBean().getReferenceValueBean();
+        orderNeedFromSearch.setCabin(referenceValueBean.getCabin());
+        orderNeedFromSearch.setPolicyId(String.valueOf(referenceValueBean.getId()));
+        String prices = referenceValueBean.getPrices();
+        orderNeedFromSearch.setFirstFlightPrice(prices.substring(0,prices.indexOf('/')));
+        orderNeedFromSearch.setSecondFlightPrice(prices.substring(prices.indexOf('/') + 1));
+        return orderNeedFromSearch;
     }
 }

@@ -27,14 +27,12 @@ import java.util.List;
 public class SearchController {
 
     @Resource
-    private HttpService httpService;
-
-    @Resource
     private FlightSearchService flightSearchService;
 
     @RequestMapping("/search")
     public ModelAndView search(SearchRequest searchRequest) {
         ModelAndView modelAndView = new ModelAndView("searchResult");
+        modelAndView.addObject("searchResult", searchRequest);
         try{
             SearchResponse searchResponse = flightSearchService.search(searchRequest);
             modelAndView.addObject("searchResponse", searchResponse);
