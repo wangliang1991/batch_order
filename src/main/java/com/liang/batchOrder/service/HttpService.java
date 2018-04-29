@@ -173,6 +173,39 @@ public class HttpService {
         return null;
     }
 
+    public void postAsync(RequestBean requestBean, RequestBody requestBody) {
+        if (requestBean == null || StringUtils.isBlank(requestBean.getUrl()) || requestBody == null) {
+            return;
+        }
+        Request.Builder requestBuilder = new Request.Builder()
+                .url(requestBean.getUrl())
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36")
+                .addHeader("Upgrade-Insecure-Requests", "1")
+                .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+                .addHeader("Referer", requestBean.getRefer())
+                .addHeader("Connection", "keep-alive")
+                .addHeader("Accept-Encoding", "deflate")
+                .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
+                .post(requestBody);
+        HTTP_CLIENT.newCall(requestBuilder.build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                try (ResponseBody body = response.body()) {
+                    if (body != null) {
+                        body.string();//string()会调用关闭
+                    }
+                } catch (Exception e) {
+                }
+
+            }
+        });
+    }
+
     private String buildUrl(String url, Map<String, String> paramMap) {
         StringBuilder urlWithParams = new StringBuilder(url);
 
