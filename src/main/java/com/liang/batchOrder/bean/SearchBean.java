@@ -11,6 +11,14 @@ public class SearchBean {
     private String arrCity;
     //出发日期
     private String depDate;
+    public SearchBean() {
+
+    }
+    public SearchBean(String depCity, String arrCity, String depDate) {
+        this.depCity = depCity;
+        this.arrCity = arrCity;
+        this.depDate = depDate;
+    }
 
     public String getDepCity() {
         return depCity;

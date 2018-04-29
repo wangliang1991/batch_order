@@ -3,6 +3,7 @@ package com.liang.batchOrder.service;
 import com.liang.batchOrder.bean.RequestBean;
 import com.liang.batchOrder.util.CookieUtil;
 import okhttp3.*;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -176,21 +177,24 @@ public class HttpService {
     /**
      * 异步post请求
      */
-    public void postAsync(RequestBean requestBean, RequestBody requestBody) {
-        if (requestBean == null || StringUtils.isBlank(requestBean.getUrl()) || requestBody == null) {
+    public void postAsync(RequestBean requestBean,RequestBody body) {
+        if (requestBean == null || StringUtils.isBlank(requestBean.getUrl()) || body == null) {
             return;
         }
         Request.Builder requestBuilder = new Request.Builder()
                 .url(requestBean.getUrl())
+                .addHeader("Host", "gt.hnair.com")
+                .addHeader("Origin", "http://gt.hnair.com")
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36")
                 .addHeader("Upgrade-Insecure-Requests", "1")
                 .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                .addHeader("Referer", requestBean.getRefer())
+                .addHeader("Referer", "http://gt.hnair.com/gt/backend/sun/searchPrice.do")
                 .addHeader("Connection", "keep-alive")
                 .addHeader("Accept-Encoding", "deflate")
                 .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
-                .post(requestBody);
+                .addHeader("Cookie", "7=1; JSESSIONID=0001QnriIuE8asa01oF6oLE3P-g:3UG9VEUPJD")
+                .post(body);
         HTTP_CLIENT.newCall(requestBuilder.build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

@@ -191,8 +191,4 @@ public class HtmlUtil {
                 break;
         }
     }
-
-    public Tuple<String, String> getCodeTuple(String html) {
-
-    }
 }
