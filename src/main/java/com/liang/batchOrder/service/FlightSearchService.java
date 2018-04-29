@@ -4,7 +4,6 @@ import com.liang.batchOrder.bean.*;
 import com.liang.batchOrder.constants.CookieConstant;
 import com.liang.batchOrder.constants.UrlConstants;
 import com.liang.batchOrder.util.HtmlUtil;
-import com.liang.batchOrder.util.Tess4jUtils;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
