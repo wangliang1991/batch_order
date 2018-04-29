@@ -7,7 +7,6 @@ import com.liang.batchOrder.constants.UrlConstants;
 import com.liang.batchOrder.service.CodeCrackService;
 import com.liang.batchOrder.service.HttpService;
 import com.liang.batchOrder.util.HtmlUtil;
-import com.liang.batchOrder.util.Tess4jUtils;
 import okhttp3.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.Map;
 
 /**

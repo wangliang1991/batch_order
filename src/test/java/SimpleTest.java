@@ -1,3 +1,4 @@
+import com.google.common.util.concurrent.RateLimiter;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.ConnectionPool;
@@ -7,15 +8,20 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class SimpleTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleTest.class);
     @Test
     public void testSubmitOrder() throws IOException {
+
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .connectTimeout(1, TimeUnit.SECONDS)
                 .connectionPool(new ConnectionPool(50, 5, TimeUnit.SECONDS))
@@ -74,6 +80,9 @@ public class SimpleTest {
                 .addHeader("Cookie", "7=1; JSESSIONID=0001QnriIuE8asa01oF6oLE3P-g:3UG9VEUPJD")
                 .post(formBody.build())
                 .build();
+        RateLimiter limiter = RateLimiter.create(2, 10, TimeUnit.MILLISECONDS);
+        for (int i=0;i<10;i++) {
+            limiter.acquire();
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -84,13 +93,15 @@ public class SimpleTest {
                 public void onResponse(Call call, Response response) {
                     try (ResponseBody body = response.body()) {
                         if (body != null) {
-                            System.out.println(body.string());//string()会调用关闭
+                            LOGGER.info("{} ok, result:{}", new Date().toString(), body.string());
                         }
                     } catch (Exception e) {
                     }
 
                 }
             });
+        }
+
         System.in.read();
         }
 
