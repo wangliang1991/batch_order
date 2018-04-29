@@ -3,6 +3,7 @@
 <%
     SearchResponse searchResponse = (SearchResponse) request.getAttribute("searchResponse");
     SearchRequest searchRequest = (SearchRequest) request.getAttribute("searchRequest");
+    ReferencePriceBean referencePriceBean = searchResponse.getReferencePriceBean();
     SearchBean firstSearchBean = searchRequest.getSearchBeanList().get(0);
     SearchBean secondSearchBean = searchRequest.getSearchBeanList().get(0);
 %>
@@ -74,6 +75,31 @@
         <%
             }
         %>
+    </table>
+    <table>
+        <tr>参考价格</tr>
+        <tr>
+            <th>承运人</th>
+            <th>航班搭配</th>
+            <th>班期搭配</th>
+            <th>间隔</th>
+            <th>航班日期</th>
+            <th>参考价</th>
+            <th>代理费</th>
+            <th>人数</th>
+            <th>旅客</th>
+        </tr>
+        <tr>
+            <td><%=referencePriceBean.getRealCarrier()%></td>
+            <td name="flightNo"><%=referencePriceBean.getFlightMatch()%></td>
+            <td><%=referencePriceBean.getFlightDateMatch()%></td>
+            <td><%=referencePriceBean.getSpan()%></td>
+            <td><%=referencePriceBean.getFlightDate()%></td>
+            <td><%=referencePriceBean.getReferencePrice()%></td>
+            <td><%=referencePriceBean.getAgencyFee()%></td>
+            <td><%=referencePriceBean.getPersonNum()%></td>
+            <td><%=referencePriceBean.getTraveler()%></td>
+        <tr/>
     </table>
     <table>
         <tr>
