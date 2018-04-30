@@ -6,15 +6,12 @@ import com.liang.batchOrder.bean.OrderNeedFromFront;
 import com.liang.batchOrder.bean.OrderNeedFromSearch;
 import com.liang.batchOrder.bean.SearchBean;
 import com.liang.batchOrder.bean.SearchRequest;
-import com.liang.batchOrder.bean.Tuple;
 import com.liang.batchOrder.service.FlightSearchService;
 import com.liang.batchOrder.service.HttpService;
 import com.liang.batchOrder.util.DateTimeUtil;
-import okhttp3.FormBody;
-import okhttp3.RequestBody;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,27 +28,33 @@ public class BatchOrderController {
     private HttpService httpService;
 
     @RequestMapping("/batchOrder")
-    public void search(final OrderNeedFromFront frontBean) {
+    public ModelAndView search(final OrderNeedFromFront frontBean) {
+        ModelAndView modelAndView = new ModelAndView("orderResult");
         String goDate = frontBean.getGoDate();
         String backDate = frontBean.getBackDate();
-        final RateLimiter limiter = RateLimiter.create(2, 10, TimeUnit.MILLISECONDS);
+
+        //测试发现两秒提交一次
+        final RateLimiter limiter = RateLimiter.create(0.5, 10, TimeUnit.MILLISECONDS);
+
         for (int i = 0; i < frontBean.getDays(); i++) {
-            SearchRequest searchRequest = new SearchRequest();
+            final SearchRequest searchRequest = new SearchRequest();
             List<SearchBean> searchBeanList = Lists.newArrayList(
                     new SearchBean("天津", "大连", goDate),
                     new SearchBean("大连", "天津", backDate));
             searchRequest.setSearchBeanList(searchBeanList);
-            final OrderNeedFromSearch searchBean = flightSearchService.searchCode(searchRequest);
             final String finalGoDate = goDate;
             final String finalBackDate = backDate;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    final OrderNeedFromSearch searchBean = flightSearchService.searchForOrder(searchRequest);
                     httpService.postAsync(limiter,frontBean, searchBean, finalGoDate, finalBackDate);
                 }
             }).start();
             goDate = DateTimeUtil.addDayByNum(goDate, 1);
             backDate = DateTimeUtil.addDayByNum(backDate, 1);
         }
+
+        return modelAndView;
     }
 }

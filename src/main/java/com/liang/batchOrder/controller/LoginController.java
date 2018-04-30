@@ -10,6 +10,8 @@ import com.liang.batchOrder.util.HtmlUtil;
 import okhttp3.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,6 +26,7 @@ import java.util.Map;
 public class LoginController {
 
     private static final int RETRY_LOGIN_TIMES = 3;
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
     @Resource
     private HttpService httpService;
@@ -37,18 +40,11 @@ public class LoginController {
         boolean loginStatus = false;
 
         try {
-//            System.setProperty("http.proxyHost", "127.0.0.1");
-//            System.setProperty("https.proxyHost", "127.0.0.1");
-//            System.setProperty("http.proxyPort", "8888");
-//            System.setProperty("https.proxyPort", "8888");
-
             //进入登录页
             Response ret = httpService.get(buildLoginIndexRequest());
             String lt = HtmlUtil.getHtmlNode(ret.body().string(), "input[name=lt]");
             //获取验证码
             String code = getCode();
-
-
             String loginRet = null;
             //进行登录,重试,三次
             for (int i = 0; i< RETRY_LOGIN_TIMES; i++) {
@@ -71,7 +67,7 @@ public class LoginController {
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LOGGER.error("login error", e);
             loginStatus = false;
         } finally {
             modelAndView.addObject("loginStatus", loginStatus);
@@ -85,7 +81,7 @@ public class LoginController {
             Response response =  httpService.post(buildLoginRequest(userName, password, lt, code));
             return response.body().string();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LOGGER.error("do login error", e);
         }
 
         return null;

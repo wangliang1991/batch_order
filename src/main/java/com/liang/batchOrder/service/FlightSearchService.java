@@ -9,6 +9,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,13 +22,15 @@ import java.util.List;
 @Service
 public class FlightSearchService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlightSearchService.class);
+
     @Resource
     private HttpService httpService;
 
     @Resource
     private CodeCrackService codeCrackService;
 
-    public OrderNeedFromSearch searchCode(SearchRequest searchRequest) {
+    public OrderNeedFromSearch searchForOrder(SearchRequest searchRequest) {
         OrderNeedFromSearch orderNeedFromSearch = null;
         try{
             String retHtml = doSearch(searchRequest);
@@ -35,7 +39,7 @@ public class FlightSearchService {
             SearchResponse searchResponse = HtmlUtil.getSearchResult(retHtml);
             orderNeedFromSearch = buildOrderNeedFromSearch(key, code, searchResponse);
         }catch (Exception e) {
-            System.out.println(e.getMessage());
+            LOGGER.error("search for order error", e);
         }
 
         return orderNeedFromSearch;
@@ -47,7 +51,7 @@ public class FlightSearchService {
         try{
             searchResponse = HtmlUtil.getSearchResult(doSearch(searchRequest));
         }catch (Exception e) {
-            System.out.println(e.getMessage());
+            LOGGER.error("search for front error", e);
         }
 
         return searchResponse;
@@ -61,9 +65,9 @@ public class FlightSearchService {
             Response response = httpService.post(requestBean, buildParamRequest(searchRequest.getSearchBeanList()));
             retHtml = response.body().string();
 
-            System.out.println(retHtml);
+            LOGGER.info("search ret:{}", retHtml);
         }catch (Exception e) {
-            System.out.println(e.getMessage());
+            LOGGER.error("do search error", e);
         }
 
         return retHtml;
