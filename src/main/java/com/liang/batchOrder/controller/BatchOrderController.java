@@ -60,7 +60,7 @@ public class BatchOrderController {
                 }).start();
                 goDate = DateTimeUtil.addDayByNum(goDate, 1);
                 backDate = DateTimeUtil.addDayByNum(backDate, 1);
-                Thread.sleep(2000);
+                Thread.sleep(2300);
             } catch (Exception e) {
                 LOGGER.error("batch order error", e);
             }

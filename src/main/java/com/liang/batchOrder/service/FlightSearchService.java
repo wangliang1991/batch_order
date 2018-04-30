@@ -65,7 +65,7 @@ public class FlightSearchService {
             Response response = httpService.post(requestBean, buildParamRequest(searchRequest.getSearchBeanList()));
             retHtml = response.body().string();
 
-            LOGGER.info("search ret:{}", retHtml);
+            //LOGGER.info("search ret:{}", retHtml);
         }catch (Exception e) {
             LOGGER.error("do search error", e);
         }
