@@ -50,6 +50,7 @@ public class BatchOrderController {
                 searchRequest.setSearchBeanList(searchBeanList);
                 final String finalGoDate = goDate;
                 final String finalBackDate = backDate;
+                LOGGER.info("第{}次提交", i);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -59,10 +60,10 @@ public class BatchOrderController {
                 }).start();
                 goDate = DateTimeUtil.addDayByNum(goDate, 1);
                 backDate = DateTimeUtil.addDayByNum(backDate, 1);
+                Thread.sleep(2000);
             } catch (Exception e) {
                 LOGGER.error("batch order error", e);
             }
-
         }
 
         return modelAndView;
