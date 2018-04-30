@@ -7,7 +7,6 @@ import com.liang.batchOrder.bean.RequestBean;
 import com.liang.batchOrder.constants.CookieConstant;
 import com.liang.batchOrder.util.CookieUtil;
 import okhttp3.*;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.*;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,7 +30,6 @@ public class HttpService {
             .connectionPool(new ConnectionPool(60, 5, TimeUnit.SECONDS))
             .followRedirects(false)  //禁制OkHttp的重定向操作，我们自己处理重定向
             .followSslRedirects(false)
-//            .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)))
             .build();
 
     /**
